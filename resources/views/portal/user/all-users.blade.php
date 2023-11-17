@@ -92,7 +92,7 @@
                 <div class="user-right-button">
                     <ul>
                         <li><a href="javascript:void(0)" class="filter-btn"><span class="fa fa-trash-o"></span></a></li>
-                        <li><a href="javascript:void(0)" class="add-button" onclick="editUser(this);"><span class="fa fa-edit"></span> Edit</a></li>
+                        <li><a href="javascript:void(0)" class="add-button" id="" onclick="editUser(this);"><span class="fa fa-edit"></span> Edit</a></li>
                     </ul>
                 </div>
             </div>
@@ -291,190 +291,8 @@
             initializeMultiSelect();
         });
 
-        function appendEditModel(id, name, username, email, phone){
-            $('.edit-modal').html(`
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel2">Edit User</h5>
-                    </div>
-                    <form action="{{ route('update-user') }}" method="post">
-                    @csrf
-
-                    <input type="hidden" name="id" value="${id}">
-
-                   <div class="modal-body">
-                       <h4>User Detail</h4>
-                       <div class="form-group">
-                           <label for="name">Name<span class="text-danger">*</span></label>
-                           <input type="text" name="name" class="form-control" value="${name}" id="name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email<span class="text-danger">*</span></label>
-                        <input type="email" name="email" class="form-control" value="${email}" id="email">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="username">User Name<span class="text-danger">*</span></label>
-                        <input type="text" name="username" class="form-control" value="${username}" id="username">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone<span class="text-danger">*</span></label>
-                        <input type="number" name="phone" class="form-control" value="${phone}" id="phone">
-                    </div>
-
-                    <hr>
-
-                    @if(!empty($user->grower))
-            <h4>Grower Details</h4>
-            <div class="form-group">
-                <label for="grower_name">Grower Name</label>
-                <input type="text" name="grower_name" class="form-control" value="{{ $user->grower->grower_name }}" id="grower_name" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="grower_group">Grower Group</label>
-                            @php
-                $growerGroup = explode(',', json_decode($user->grower->grower_group));
-                $growerTags = explode(',', json_decode($user->grower->grower_tags));
-            @endphp
-            <select id="grower_group" name="grower_group" class="js-example-tags form-control" multiple="multiple">
-@forelse($growerGroup as $group)
-            <option value="{{ $group }}" selected>{{ $group }}</option>
-                                @empty
-            @endforelse
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="grower_tags">Unique Tags</label>
-            <select id="grower_tags" name="grower_tags" class="js-example-tags form-control" multiple="multiple">
-            @forelse($growerTags as $tag)
-                <option value="{{ $tag }}">{{ $tag }}</option>
-            @empty
-            @endforelse
-            </select>
-        </div>
-        @else
-            <h4>Grower Details</h4>
-            <div class="form-group">
-                <label for="grower_name">Grower Name</label>
-                <input type="text" name="grower_name" class="form-control" id="grower_name" />
-            </div>
-
-            <div class="form-group">
-                <label for="grower_group">Grower Group</label>
-                <select id="grower_group" name="grower_group" class="js-example-tags form-control" multiple="multiple"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="grower_tags">Unique Tags</label>
-                <select id="grower_tags" name="grower_tags" class="js-example-tags form-control" multiple="multiple"></select>
-            </div>
-@endif
-
-            <hr>
-
-@if(!empty($user->buyer))
-            <h4>Buyer Details</h4>
-            <div class="form-group">
-                <label for="buyer_group">Buyer Group</label>
-@php
-                $buyerGroup = explode(',', json_decode($user->buyer->buyer_group));
-                $buyerTags = explode(',', json_decode($user->buyer->buyer_tags));
-            @endphp
-            <select id="buyer_group" name="buyer_group" class="js-example-tags form-control" multiple="multiple">
-@forelse($buyerGroup as $bGroup)
-            <option value="{{ $bGroup }}">{{ $bGroup }}</option>
-                                @empty
-            @endforelse
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="buyer_tags">Unique Tags</label>
-            <select id="buyer_tags" name="buyer_tags" class="js-example-tags form-control" multiple="multiple">
-@forelse($buyerTags as $bTag)
-            <option value="{{ $bTag }}">{{ $bTag }}</option>
-                                @empty
-            @endforelse
-            </select>
-        </div>
-@else
-            <h4>Buyer Details</h4>
-            <div class="form-group">
-                <label for="buyer_group">Buyer Group</label>
-                <select id="buyer_group" name="buyer_group" class="js-example-tags form-control" multiple="multiple"></select>
-            </div>
-
-            <div class="form-group">
-                <label for="buyer_tags">Unique Tags</label>
-                <select id="buyer_tags" name="buyer_tags" class="js-example-tags form-control" multiple="multiple"></select>
-            </div>
-@endif
-
-            <hr>
-
-@if(!empty($user->paddock))
-            <h4>Paddock</h4>
-            <div class="paddock_card">
-@php
-                $paddockNames = json_decode($user->paddock->paddock_name);
-                $NoHectares = json_decode($user->paddock->no_of_hectares);
-            @endphp
-
-            @forelse($paddockNames as $key=>$paddockName)
-            <div class="card">
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="">Paddock Name</label>
-                        <input type="text" name="paddock_name[]" value="{{ $paddockName }}" class="form-control" />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="">No. of Hectares</label>
-                                            <input type="text" name="no_of_hectares[]" value="{{ $NoHectares[$key] }}" class="form-control" />
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-            @endforelse
-            </div>
-@else
-            <h4>Paddock</h4>
-            <div class="paddock_card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="">Paddock Name</label>
-                            <input type="text" name="paddock_name[]" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="">No. of Hectares</label>
-                            <input type="text" name="no_of_hectares[]" class="form-control" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-@endif
-            <div class="text-right">
-                <button type="button" class="btn text-danger add_paddock" onclick="appendFields();">+ Add</button>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="add-button" data-dismiss="modal" style="background: #E22827; border: 1px solid #E22827; color: #fff;
-            text-decoration: none; padding: 8px 16px; border-radius: 3px; transition: 300ms ease-out !important;">Close</button>
-            <button type="submit" class="add-button" style="background: #E22827; border: 1px solid #E22827; color: #fff;
-            text-decoration: none; padding: 8px 16px; border-radius: 3px; transition: 300ms ease-out !important;">Update</button>
-        </div>
-    </form>
-`);
-        }
-
         function activeTab(name, id, username, email, phone){
-            console.log([name, id, username, email, phone]);
+           // console.log([name, id, username, email, phone]);
             $('.user_name').text(name);
             $('.add-button').attr('id', ':id'.replace(':id', id));
             $('.filter-btn').attr('href', '{{ route('delete-user', ['id' => ':id']) }}'.replace(':id', id));
@@ -491,8 +309,6 @@
                dataType: 'JSON',
                data: {id:id},
                success: function (response){
-                   // console.log(response.data);
-
                    $('#exampleModal2').modal('show');
                }
             });
@@ -522,6 +338,190 @@
                     tags: true,
                 });
             }, 500);
+        }
+
+        function appendEditModel(id, name, username, email, phone){
+            $('.edit-modal').html(`
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Edit User</h5>
+                </div>
+                <form action="{{ route('update-user') }}" method="post">
+                @csrf
+
+            <input type="hidden" name="id" value="${id}">
+
+               <div class="modal-body">
+                   <h4>User Detail</h4>
+                   <div class="form-group">
+                       <label for="name">Name<span class="text-danger">*</span></label>
+                       <input type="text" name="name" class="form-control" value="${name}" id="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email<span class="text-danger">*</span></label>
+                    <input type="email" name="email" class="form-control" value="${email}" id="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="username">User Name<span class="text-danger">*</span></label>
+                    <input type="text" name="username" class="form-control" value="${username}" id="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone<span class="text-danger">*</span></label>
+                    <input type="number" name="phone" class="form-control" value="${phone}" id="phone">
+                </div>
+
+                <hr>
+
+               @if(!empty($user->grower))
+            <h4>Grower Details</h4>
+            <div class="form-group">
+                <label for="grower_name">Grower Name</label>
+                <input type="text" name="grower_name" class="form-control" value="{{ $user->grower->grower_name }}" id="grower_name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grower_group">Grower Group</label>
+                    @php
+                        $growerGroup = explode(',', json_decode($user->grower->grower_group));
+                        $growerTags = explode(',', json_decode($user->grower->grower_tags));
+                    @endphp
+            <select id="grower_group" name="grower_group" class="js-example-tags form-control" multiple="multiple">
+                @forelse($growerGroup as $group)
+                    <option value="{{ $group }}" selected>{{ $group }}</option>
+                @empty
+                @endforelse
+            </select>
+       </div>
+
+        <div class="form-group">
+            <label for="grower_tags">Unique Tags</label>
+            <select id="grower_tags" name="grower_tags" class="js-example-tags form-control" multiple="multiple">
+@forelse($growerTags as $tag)
+            <option value="{{ $tag }}">{{ $tag }}</option>
+                    @empty
+            @endforelse
+            </select>
+        </div>
+@else
+
+            <h4>Grower Details</h4>
+            <div class="form-group">
+                <label for="grower_name">Grower Name</label>
+                <input type="text" name="grower_name" class="form-control" id="grower_name" />
+            </div>
+
+            <div class="form-group">
+                <label for="grower_group">Grower Group</label>
+                <select id="grower_group" name="grower_group" class="js-example-tags form-control" multiple="multiple"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="grower_tags">Unique Tags</label>
+                <select id="grower_tags" name="grower_tags" class="js-example-tags form-control" multiple="multiple"></select>
+            </div>
+@endif
+
+            <hr>
+
+@if(!empty($user->buyer))
+            <h4>Buyer Details</h4>
+            <div class="form-group">
+                <label for="buyer_group">Buyer Group</label>
+@php
+                $buyerGroup = explode(',', json_decode($user->buyer->buyer_group));
+                $buyerTags = explode(',', json_decode($user->buyer->buyer_tags));
+            @endphp
+
+            <select id="buyer_group" name="buyer_group" class="js-example-tags form-control" multiple="multiple">
+@forelse($buyerGroup as $bGroup)
+            <option value="{{ $bGroup }}">{{ $bGroup }}</option>
+                    @empty
+            @endforelse
+            </select>
+            </div>
+
+    <div class="form-group">
+        <label for="buyer_tags">Unique Tags</label>
+        <select id="buyer_tags" name="buyer_tags" class="js-example-tags form-control" multiple="multiple">
+@forelse($buyerTags as $bTag)
+            <option value="{{ $bTag }}">{{ $bTag }}</option>
+                @empty
+            @endforelse
+            </select>
+        </div>
+        @else
+            <h4>Buyer Details</h4>
+            <div class="form-group">
+                <label for="buyer_group">Buyer Group</label>
+                <select id="buyer_group" name="buyer_group" class="js-example-tags form-control" multiple="multiple"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="buyer_tags">Unique Tags</label>
+                <select id="buyer_tags" name="buyer_tags" class="js-example-tags form-control" multiple="multiple"></select>
+            </div>
+        @endif
+
+            <hr>
+
+@if(!empty($user->paddock))
+            <h4>Paddock</h4>
+            <div class="paddock_card">
+            @php
+                $paddockNames = json_decode($user->paddock->paddock_name);
+                $NoHectares = json_decode($user->paddock->no_of_hectares);
+            @endphp
+
+            @forelse($paddockNames as $key=>$paddockName)
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="">Paddock Name</label>
+                        <input type="text" name="paddock_name[]" value="{{ $paddockName }}" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">No. of Hectares</label>
+                        <input type="text" name="no_of_hectares[]" value="{{ $NoHectares[$key] }}" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            @empty
+            @endforelse
+            </div>
+        @else
+            <h4>Paddock</h4>
+            <div class="paddock_card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="">Paddock Name</label>
+                            <input type="text" name="paddock_name[]" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">No. of Hectares</label>
+                            <input type="text" name="no_of_hectares[]" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+            <div class="text-right">
+                <button type="button" class="btn text-danger add_paddock" onclick="appendFields();">+ Add</button>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="add-button" data-dismiss="modal" style="background: #E22827; border: 1px solid #E22827; color: #fff;
+            text-decoration: none; padding: 8px 16px; border-radius: 3px; transition: 300ms ease-out !important;">Close</button>
+            <button type="submit" class="add-button" style="background: #E22827; border: 1px solid #E22827; color: #fff;
+            text-decoration: none; padding: 8px 16px; border-radius: 3px; transition: 300ms ease-out !important;">Update</button>
+        </div>
+    </form>
+`);
         }
     </script>
 @endsection

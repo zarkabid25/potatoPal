@@ -59,7 +59,6 @@ class AdminController extends Controller
         try{
             $user = User::with(['grower', 'buyer', 'paddock'])->where('id', $request->id)->first();
 
-            //$html = view('portal.user.edit-user-details', compact('user'));
             return response()->json(['status' => 'true', 'data' => $user]);
 
         } catch(\Exception $ex){

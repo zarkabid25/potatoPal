@@ -42,7 +42,7 @@
                     <!-- col -->
                     <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="menu-icon">
-                            <a href="unloading.html">
+                            <a href="{{ route('all-unloadings') }}">
                                 <img src="{{ asset('images/menu3.png') }}" alt="">
                                 <span> Unloading </span>
                             </a>

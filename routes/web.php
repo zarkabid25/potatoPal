@@ -39,4 +39,15 @@ Route::group(['middleware' => 'auth'], function (){
 
     //receivals
     Route::get('/receivals', [ReceivalsController::class, 'index'])->name('all-receivals');
+    Route::post('/receivals', [ReceivalsController::class, 'store'])->name('store.receivals');
+    Route::get('/receival/edit', [ReceivalsController::class, 'edit'])->name('edit.receivals');
+    Route::post('/receival/update', [ReceivalsController::class, 'update'])->name('update.receivals');
+    Route::get('/receival/delete/{id}', [ReceivalsController::class, 'delete'])->name('delete.receivals');
+    Route::post('/receival/push/Unload', [ReceivalsController::class, 'Unload'])->name('unload.receivals');
+    Route::post('/receival/push/TIA', [ReceivalsController::class, 'pushTIA'])->name('pushTIA.receivals');
+
+    //unloadings
+    Route::get('/unloadings', [\App\Http\Controllers\admin\UnloadingController::class, 'index'])->name('all-unloadings');
+    Route::get('/unloadings/edit', [\App\Http\Controllers\admin\UnloadingController::class, 'edit'])->name('edit-unloadings');
+    Route::post('/unloadings/update', [\App\Http\Controllers\admin\UnloadingController::class, 'update'])->name('update-unloadings');
 });
