@@ -137,7 +137,7 @@
                         <li class="@if($key === 0) active @endif">
                             <a href="#tab-{{ $key }}" id="tab{{ $key }}-tab" data-toggle="tab" onclick="activeTab(this);"
                             data-id="{{ $val->id }}" data-growerName="{{ $val->grower_name }}" data-receivalID="{{ $val->receival->id }}"
-                               data-unloadDate="{{ date('Y-m-d H:i:s', strtotime($val->receival->update_at)) }}" data-unloadStatus="{{ $val->receival->unloading_status }}"
+                               data-unloadDate="{{ date('Y-m-d H:i:s', strtotime($val->receival->created_at)) }}" data-unloadStatus="{{ $val->receival->unloading_status }}"
                                data-fungicide="{{ $val->receival->fungicide }}" data-seedBinSize="{{ $val->receival->seed_bin_size }}" data-overSizeBin="{{ $val->receival->oversize_bin_size }}"
                             >
                                 <div class="user-table">
@@ -322,7 +322,9 @@
 
                 return options;
             }
-
+            // <select id="grower_name" name="grower_name[]" class="js-example-tags form-control" multiple="multiple">
+            //     ${generateSelectOptions([receival.receival.grower_name], receival.receival.grower_name)}
+            // </select>
             $('.modal-content').append(`
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -345,9 +347,8 @@
 
             <div class="form-group">
                 <label for="grower_name">Grower Name<span class="text-danger">*</span></label>
-                <select id="grower_name" name="grower_name[]" class="js-example-tags form-control" multiple="multiple">
-                    ${generateSelectOptions([receival.receival.grower_name], receival.receival.grower_name)}
-                </select>
+                <input type="text" class="form-control" id="grower_name" name="grower_name" value="${receival.receival.grower_name ? receival.receival.grower_name : ''}" />
+
             </div>
 
             <div class="form-group">

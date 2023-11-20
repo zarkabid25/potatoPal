@@ -147,7 +147,14 @@
                                             <th>Receival ID</th>
                                         </tr>
                                         <tr>
-                                            <td>{{ $receival->grower_name ?? '--' }}</td>
+                                            @if(is_string($receival->grower_name) && is_array(json_decode($receival->grower_name, true)))
+                                                @foreach(json_decode($receival->grower_name) as $gName)
+                                                    <td>{{ $gName ?? '--' }}</td>
+                                                @endforeach
+                                            @else
+                                                <td>{{ $receival->grower_name ?? '--' }}</td>
+                                            @endif
+
                                             <td>{{ $receival->id }}</td>
                                         </tr>
                                     </table>
@@ -164,23 +171,35 @@
                 <div class="tab-content">
                     @forelse($receivals as $v=>$receival)
                         @php
-                            //$grower_name = json_decode($receival->grower_name);
-                            $grower_groups = json_decode($receival->grower_group);
-                            $paddock_names = json_decode($receival->paddock_name);
-                            $seed_varietess = json_decode($receival->seed_variety);
-                            $seed_generations = json_decode($receival->seed_generation);
-                            $seed_classes = json_decode($receival->seed_class);
-                            $seed_types = json_decode($receival->seed_type);
-                            $transport_cos = json_decode($receival->transport_co);
-                            $delivery_types = json_decode($receival->delivery_type);
-                            $fungicides = json_decode($receival->fungicide);
+                                if(is_string($receival->grower_name) && is_array(json_decode($receival->grower_name, true))){
+                                    $grower_name = json_decode($receival->grower_name);
+                                }
+                                else{
+                                    $grower_name = $receival->group_name;
+                                }
+                                $grower_groups = json_decode($receival->grower_group);
+                                $paddock_names = json_decode($receival->paddock_name);
+                                $seed_varietess = json_decode($receival->seed_variety);
+                                $seed_generations = json_decode($receival->seed_generation);
+                                $seed_classes = json_decode($receival->seed_class);
+                                $seed_types = json_decode($receival->seed_type);
+                                $transport_cos = json_decode($receival->transport_co);
+                                $delivery_types = json_decode($receival->delivery_type);
+                                $fungicides = json_decode($receival->fungicide);
                         @endphp
                         <div class="tab-pane @if($v === 0) active @endif" id="tab-{{ $v }}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="user-boxes">
                                         <h6>Grower Name</h6>
-                                        <h5>{{ $receival->grower_name ?? '--' }}</h5>
+                                        @if(is_array($grower_name))
+                                            @foreach($grower_name as $gName)
+                                                <h5>{{ $gName ?? '--' }}</h5>
+                                            @endforeach
+                                        @else
+                                            <h5>{{ $receival->grower_name ?? '--' }}</h5>
+                                        @endif
+
                                         <h6>Grower Group</h6>
                                         @forelse($grower_groups as $grower_group)
                                             <h5>{{ $grower_group }}</h5>
@@ -315,8 +334,10 @@
 
 @section('JS')
     <script>
-        $(".js-example-tags").select2({
-            tags: true
+        $(document).ready(function (){
+            $('.js-example-tags').select2({
+                tags: true,
+            });
         });
 
         function pushUnloading(id){
@@ -432,7 +453,17 @@
                 return options;
             }
 
-            $('.modal-content').append(`
+            $(document).ready(function() {
+                $(document).on('click', '#pending, #completed', function() {
+                    if ($(this).attr('id') === 'pending') {
+                        $('#completed').prop('checked', false);
+                    } else if ($(this).attr('id') === 'completed') {
+                        $('#pending').prop('checked', false);
+                    }
+                });
+            });
+
+            $('.modal-content').html(`
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span class="fa fa-arrow-left"></span>
@@ -497,6 +528,7 @@
             <input type="text" name="tia_sample_id" id="tia_sample_id" value="${receival.tia_sample_id ? receival.tia_sample_id : ''}" class="form-control" />
                     </div>
 
+
                     <div class="form-group">
                         <label for="unloading_status">Unloading Status</label>
 
@@ -504,12 +536,12 @@
                             <input type="radio" id="pending" name="unloading_status" ${receival.unloading_status === 'pending' ? 'checked' : ''} value="pending" />
                             <label class="tab" for="pending">Pending</label>
 
-                            <input type="radio" id="completed" name="unloading_status" value="completed" ${receival.unloading_status === 'completed' ? 'checked' : ''} />
+                            <input type="radio" id="completed" name="unloading_status" ${receival.unloading_status === 'completed' ? 'checked' : ''} value="completed" />
                             <label class="tab" for="completed">Completed</label>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                <div class="form-group">
                         <label for="unloading_ID">Unloading ID</label>
                         <input type="text" name="unloading_ID" id="unloading_ID" value="${receival.unloading_ID ? receival.unloading_ID : '' }" class="form-control" />
                     </div>

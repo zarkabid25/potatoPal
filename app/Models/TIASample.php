@@ -12,4 +12,10 @@ class TIASample extends Model
     protected $fillable=['receival_id'];
 
     protected $table='tia_sample';
+
+    protected $guarded = [];
+
+    public function receival(){
+        return $this->belongsTo(Receival::class, 'receival_id', 'id');
+    }
 }

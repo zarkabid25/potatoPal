@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/test', function (){
+   return view('welcome');
+});
+
 Route::get('/', function () {
     return redirect('/login');
 })->name('logIn');
@@ -50,4 +54,29 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('/unloadings', [\App\Http\Controllers\admin\UnloadingController::class, 'index'])->name('all-unloadings');
     Route::get('/unloadings/edit', [\App\Http\Controllers\admin\UnloadingController::class, 'edit'])->name('edit-unloadings');
     Route::post('/unloadings/update', [\App\Http\Controllers\admin\UnloadingController::class, 'update'])->name('update-unloadings');
+
+    //admin options
+    Route::get('/admin_options', function (){
+       return view('portal.admin-options.admin-options');
+    })->name('admin-options');
+
+    //resource
+    Route::resources([
+       'seedClass' => \App\Http\Controllers\admin\SeedClassController::class,
+       'deliveryType' => \App\Http\Controllers\admin\DeliveryTypeController::class,
+       'fungicide' => \App\Http\Controllers\admin\FungicideController::class,
+       'seedGeneration' => \App\Http\Controllers\admin\SeedGenerationController::class,
+       'seedType' => \App\Http\Controllers\admin\SeedTypeController::class,
+       'seedVariety' => \App\Http\Controllers\admin\SeedVarietyController::class,
+        'buyerGroupType' => \App\Http\Controllers\admin\BuyerGroupTypeController::class,
+        'growerGroupType' => \App\Http\Controllers\admin\GrowerGroupTypeController::class,
+        'paddock' => \App\Http\Controllers\admin\PaddockController::class,
+        'note' => \App\Http\Controllers\admin\NotesController::class,
+        'file' => \App\Http\Controllers\admin\FilesController::class,
+    ]);
+
+    //TIA Sample
+    Route::get('/tia_sample', [\App\Http\Controllers\admin\TIASampleController::class, 'index'])->name('tia-sample');
+    Route::post('/tia_sample', [\App\Http\Controllers\admin\TIASampleController::class, 'store'])->name('store.tia_sample');
+    Route::get('/tia_add_modal', [\App\Http\Controllers\admin\TIASampleController::class, 'tiaAddModal'])->name('tia-add-modal');
 });

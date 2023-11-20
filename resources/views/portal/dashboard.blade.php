@@ -52,7 +52,7 @@
                     <!-- col -->
                     <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="menu-icon">
-                            <a href="">
+                            <a href="{{ route('tia-sample') }}">
                                 <img src="{{ asset('images/menu4.png') }}" alt="">
                                 <span> TIA Samples </span>
                             </a>
@@ -151,9 +151,9 @@
                 <div class="row">
                     <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="menu-icon">
-                            <a href="">
+                            <a href="{{ route('admin-options') }}">
                                 <img src="{{ asset('images/menu13.png') }}" alt="">
-                                <span> Other Jobs </span>
+                                <span> Admin Options </span>
                             </a>
                         </div>
                         <!-- menu-icon -->
@@ -171,7 +171,7 @@
                     <!-- col -->
                     <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="menu-icon">
-                            <a href="notes.html">
+                            <a href="{{ route('note.index') }}">
                                 <img src="{{ asset('images/menu15.png') }}" alt="">
                                 <span> Notes </span>
                             </a>
@@ -181,7 +181,7 @@
                     <!-- col -->
                     <div class="col-md-3 col-sm-3 col-xs-3">
                         <div class="menu-icon">
-                            <a href="files.html">
+                            <a href="{{ route('file.index') }}">
                                 <img src="{{ asset('images/menu16.png') }}" alt="">
                                 <span> Files </span>
                             </a>
